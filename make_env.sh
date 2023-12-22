@@ -34,3 +34,7 @@ echo "MYKINSO_API_URL=${MYKINSO_API_URL}" >> ${OUTPUT_FILE}
 
 # 確認のために設定した環境変数を表示
 cat ${OUTPUT_FILE}
+
+# アプリケーションを起動
+echo "Run go"
+go run main.go
