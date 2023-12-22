@@ -6,17 +6,14 @@ OUTPUT_FILE=${1:-".env"}
 # RDS_SECRET 環境変数から JSON 文字列を取得
 json_data=${RDS_SECRET}
 
-# JSON 文字列から各キーと値を抽出し、環境変数として設定
-while IFS=":" read -r key value; do
-    # キーの加工（ダブルクォートと余分なスペースの削除）
-    clean_key=$(echo $key | sed 's/[", ]//g')
-
-    # 値の加工（ダブルクォート、カンマ、波括弧の削除）
-    clean_value=$(echo $value | sed 's/[",{}]//g')
-
-    # 環境変数として設定
-    declare "${clean_key}=${clean_value}"
-done <<< "$(echo $json_data | sed 's/[:,]/\n/g')"
+# JSON 文字列を解析して各キーの値を取得
+password=$(echo $json_data | grep -o '"password":"[^"]*' | grep -o '[^"]*$')
+dbname=$(echo $json_data | grep -o '"dbname":"[^"]*' | grep -o '[^"]*$')
+engine=$(echo $json_data | grep -o '"engine":"[^"]*' | grep -o '[^"]*$')
+port=$(echo $json_data | grep -o '"port":[^,]*' | grep -o '[0-9]*')
+dbInstanceIdentifier=$(echo $json_data | grep -o '"dbInstanceIdentifier":"[^"]*' | grep -o '[^"]*$')
+host=$(echo $json_data | grep -o '"host":"[^"]*' | grep -o '[^"]*$')
+username=$(echo $json_data | grep -o '"username":"[^"]*' | grep -o '[^"]*$')
 
 # .env ファイルに書き出す
 echo "password=${password}" > ${OUTPUT_FILE}
