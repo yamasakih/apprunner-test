@@ -6,18 +6,17 @@ OUTPUT_FILE=${1:-".env"}
 # RDS_SECRET 環境変数から JSON 文字列を取得
 json_data=${RDS_SECRET}
 
-# 波括弧を削除
-json_data=$(echo $json_data | sed 's/[{}]//g')
+# JSON 文字列から各キーと値を抽出し、環境変数として設定
+while IFS=":" read -r key value; do
+    # キーの加工（ダブルクォートと余分なスペースの削除）
+    clean_key=$(echo $key | sed 's/[", ]//g')
 
-# カンマとコロンで区切られた各ペアを処理
-IFS=',' read -ra PAIRS <<< "$json_data"
-for pair in "${PAIRS[@]}"; do
-    # キーと値を分割
-    IFS=':' read -r key value <<< "$pair"
+    # 値の加工（ダブルクォート、カンマ、波括弧の削除）
+    clean_value=$(echo $value | sed 's/[",{}]//g')
 
     # 環境変数として設定
-    declare "$key=$value"
-done
+    declare "${clean_key}=${clean_value}"
+done <<< "$(echo $json_data | sed 's/[:,]/\n/g')"
 
 # .env ファイルに書き出す
 echo "password=${password}" > ${OUTPUT_FILE}
