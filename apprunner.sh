@@ -9,7 +9,7 @@ fi
 # RDS_SECRETからnameとpasswordを抽出し、.envに書き出す
 if [ -z "${RDS_SECRET}" ]; then
     echo "環境変数RDS_SECRETが設定されていません。"
-    exit 1
+    # exit 1
 fi
 
 # JSONからnameとpasswordを抽出
