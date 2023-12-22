@@ -3,7 +3,7 @@
 # jqがインストールされているかチェックし、なければインストール
 if ! command -v jq &> /dev/null; then
     echo "jqがインストールされていません。インストールします。"
-    sudo apt-get update && sudo apt-get install -y jq
+    sudo yum update && sudo yum install -y jq
 fi
 
 # RDS_SECRETからnameとpasswordを抽出し、.envに書き出す
@@ -12,9 +12,12 @@ if [ -z "${RDS_SECRET}" ]; then
     # exit 1
 fi
 
+echo ${RDS_SECRET}
+
 # JSONからnameとpasswordを抽出
 name=$(echo "${RDS_SECRET}" | jq -r '.name')
 password=$(echo "${RDS_SECRET}" | jq -r '.password')
+
 
 # .envファイルに書き出す
 echo "NAME=$name" > .env
