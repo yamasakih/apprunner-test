@@ -8,7 +8,7 @@ import (
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
   envVar := os.Getenv("RDS_SECRET")
-  fmt.Fprintf(w, "<h1>Hello World version1.0.0</h1><p>RDS_SECRET: %s</p>", envVar)
+  fmt.Fprintf(w, "<h1>Hi!! World version1.0.0</h1><p>RDS_SECRET: %s</p>", envVar)
 }
 
 func main() {
